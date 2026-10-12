@@ -83,7 +83,11 @@ Set `MEDIA_SERVICE=plex` in `.env`. In `docker-compose.yml`, uncomment `network_
 
 ## What I learned
 
-TODO (Vyom): write this part yourself.
+- `PUID` and `PGID` make the containers read and write files as my user. If they don't match my account, the media server writes files as a different user, and I can't manage them from my own login.
+- Keeping real values in `.env` and committing only `.env.example` is what lets this repo be public. Anyone can copy the setup without seeing my paths or user IDs.
+- Portainer and Watchtower only work because the Docker socket is mounted into them. Anything with that socket can control every container on the machine, so Portainer gets it read-only. Watchtower needs write access to pull images and restart containers.
+- Each container keeps its settings in its own folder under `config/`. I can rebuild or update a container without losing its library or setup, because that data lives outside the container.
+- Plex needs host networking in this setup, so it can't use the same port mapping as Jellyfin. Switching to Plex takes a change in the compose file as well as in `.env`.
 
 ## Credit
 
