@@ -1,0 +1,31 @@
+# Real settings and secrets stay on the server. Only .env.example is committed.
+.env
+.env.*
+!.env.example
+
+# App data the containers write (databases, caches, logs)
+config/
+*.log
+
+# Media files never go in git
+media/
+*.mkv
+*.mp4
+*.m4v
+*.avi
+*.iso
+*.mp3
+*.flac
+
+# Captures and keys
+*.pcap
+*.pcapng
+*.key
+*.pem
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/

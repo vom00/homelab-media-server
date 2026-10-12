@@ -1,0 +1,43 @@
+# Home media server, modeled on the layout YAMS (https://yams.media) sets up.
+# Every personal value comes from .env (see .env.example).
+
+services:
+  # The media server streams the library to TVs, phones and browsers.
+  media:
+    image: lscr.io/linuxserver/${MEDIA_SERVICE}:latest
+    container_name: ${MEDIA_SERVICE}
+    # For Plex: uncomment network_mode and remove the ports block below.
+    # network_mode: host
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VERSION=docker
+    volumes:
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+
+  # Portainer is a web page for checking on the containers and their logs.
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${INSTALL_DIRECTORY}/config/portainer:/data
+    restart: unless-stopped
+
+  # Watchtower pulls new images and restarts containers so they stay updated.
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - TZ=${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
